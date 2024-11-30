@@ -7,8 +7,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     
   </head>
-  <body style="border-radius:50%;background-color: #132A84">
-    <nav class="navbar navbar-expand-lg bg-body-tertiary" style="height:100px; padding:20px">
+  <body style="border-radius:50px">
+    <nav class="navbar navbar-expand-lg" style="height:100px; padding:20px; background-color: white; box-shadow: none;">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
                 <img src="{{ asset('images/logo.png') }}" alt="Logo" width="90" height="84" class="d-inline-block align-text-top">
@@ -66,7 +66,7 @@
 
 
 
-    <div class="container" >
+    <div class="rounded-container; background-color:white" >
         <div class="row">
           <div class="col-3">
             <h1>Welcome to Ganesh Custom Shop Inventory System!</h1>

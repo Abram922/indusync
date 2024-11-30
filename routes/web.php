@@ -30,7 +30,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Middleware untuk role admin
     Route::middleware(['role:admin'])->group(function () {
         Route::get('/dashboard', function () {
-            return view('dashboard');
+            return view('/admin/dashboard');
         })->name('dashboard');
     });
     
