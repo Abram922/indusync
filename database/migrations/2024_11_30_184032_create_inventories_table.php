@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('inventories', function (Blueprint $table) {
             $table->id();
-            $table->integer('kode_barang')->unique();
+            $table->string('kode_barang')->unique();
             $table->string('namabarang');
             $table->integer('quantity');
             $table->timestamp('tanggal_masuk')->nullable();
             $table->timestamp('tanggal_input')->nullable();
             $table->string('jenis');
+            $table->text('keterangan');
             $table->timestamps();
         });
     }

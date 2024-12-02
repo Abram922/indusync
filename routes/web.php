@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Owner\OwnerController;
 
@@ -32,6 +33,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/dashboard', function () {
             return view('/admin/dashboard');
         })->name('dashboard');
+
+        Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.incomingItemData');
+
+          // Menyimpan data yang ditambahkan
+    Route::post('/inventory', [InventoryController::class, 'store'])->name('inventory.store');
+
+    // Menampilkan data inventory (misalnya)
+    Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
     });
     
     // Middleware untuk role owner
@@ -39,6 +48,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/dashboard', function () {
             return view('dashboard');
         })->name('dashboard');
+        
     });
 
 });
