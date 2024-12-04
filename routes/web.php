@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Models\OutcomingInventory;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\OutcomingInventoryController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Owner\OwnerController;
 
@@ -41,6 +43,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Menampilkan data inventory (misalnya)
     Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
+
+    Route::get('/stockData', [InventoryController::class, 'stockData'])->name('inventory.stockData');
+
+    // OutGoing
+    Route::get('/outGoingData', [OutcomingInventoryController::class, 'index'])->name('inventory.outComingData');
+
+
     });
     
     // Middleware untuk role owner

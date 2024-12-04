@@ -30,10 +30,10 @@
                     <x-nav-link :href="route('inventory.index')" class="block w-full px-7 py-2 text-white hover:bg-blue-600">
                         {{ __('Incoming Item Data') }}
                     </x-nav-link>
-                    <x-nav-link class="block w-full px-7 py-2 text-white hover:bg-blue-600">
+                    <x-nav-link  :href="route('inventory.outComingData')"  class="block w-full px-7 py-2 text-white hover:bg-blue-600">
                         {{ __('Outgoing Item Data') }}
                     </x-nav-link>
-                    <x-nav-link class="block w-full px-7 py-2 text-white hover:bg-blue-600">
+                    <x-nav-link  :href="route('inventory.stockData')" class="block w-full px-7 py-2 text-white hover:bg-blue-600">
                         {{ __('Stock Data') }}
                     </x-nav-link>
                 </div>
