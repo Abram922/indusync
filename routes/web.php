@@ -5,6 +5,7 @@ use App\Models\OutcomingInventory;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\OutcomingInventoryController;
+use App\Http\Controllers\OutGoingInventroyController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Owner\OwnerController;
 
@@ -38,16 +39,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.incomingItemData');
 
-          // Menyimpan data yang ditambahkan
-    Route::post('/inventory', [InventoryController::class, 'store'])->name('inventory.store');
+        //inventory
+        Route::post('/inventory', [InventoryController::class, 'store'])->name('inventory.store');
+        Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
+        Route::delete('/inventory/{id}', [InventoryController::class, 'destroy'])->name('inventory.destroy');
+        Route::get('/inventory/print/{id}', [InventoryController::class, 'print'])->name('inventory.print');
 
-    // Menampilkan data inventory (misalnya)
-    Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
 
-    Route::get('/stockData', [InventoryController::class, 'stockData'])->name('inventory.stockData');
+        Route::get('/stockData', [InventoryController::class, 'stockData'])->name('inventory.stockData');
 
-    // OutGoing
-    Route::get('/outGoingData', [OutcomingInventoryController::class, 'index'])->name('inventory.outComingData');
+        // OutGoing
+        Route::get('/outGoingData', [OutGoingInventroyController::class, 'index'])->name('inventory.outComingData');
+        Route::post('/outgoing/store', [OutGoingInventroyController::class, 'store'])->name('outgoing.store');
+        Route::delete('/outgoing/{id}', [OutGoingInventroyController::class, 'destroy'])->name('outgoing.destroy');
+        Route::get('/outgoing/print/{id}', [OutGoingInventroyController::class, 'print'])->name('outgoing.print');
+
 
 
     });

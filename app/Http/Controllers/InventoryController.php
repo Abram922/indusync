@@ -74,50 +74,81 @@ use Illuminate\Support\Facades\DB;
     
         //dd(compact('stockData', 'months', 'incomingQuantities', 'outcomingQuantities'));
     
-        // Kirim data ke view
         return view('inventory.stockData', compact('stockData', 'months', 'incomingQuantities', 'outcomingQuantities'));
     }
-    
-    
-    
 
     public function store(Request $request)
     {
-        // Validasi input
-        $validated = $request->validate([
-            'namabarang' => 'required|string|max:255',
-            'quantity' => 'required|integer',
-            'tanggal_masuk' => 'required|date',
-            'keterangan' => 'nullable|string|max:255',
-            'jenis' => 'required|string|max:255',
+        $data = $request->validate([
+            'inventory_id' => 'integer',
+            'namabarang' => 'string',
+            'description' => 'nullable|string',
+            'quantity' => 'integer',
+            'supplier' => 'string',
+            'tanggal_masuk' => 'date',
+            'keterangan' => 'nullable|string',
         ]);
     
-        try {
-            // Menyiapkan data untuk disimpan
-            $data = [
-                'kode_barang' => uniqid(),
-                'namabarang' => $request->namabarang,
-                'quantity' => $request->quantity,
-                'tanggal_masuk' => $request->tanggal_masuk,
-                'tanggal_input' => now()->toDateTimeString(),
-                'keterangan' => $request->keterangan,
-                'jenis' => $request->jenis,
-            ];
-    
-            // Dump data sebelum disimpan
-            //dd($data);
-    
-            // Simpan data ke database
-            Inventory::create($data);
-    
-            return redirect()->route('inventory.index')->with('success', 'Data berhasil ditambahkan');
+        if ($data['inventory_id'] == '0') {
+            // Periksa apakah nama barang sudah ada
+            $existingInventory = Inventory::where('name', $data['namabarang'])->first();
             
-        } catch (\Exception $e) {
-            // Tangani error dan log exception
-            Log::error('Error saat menyimpan data inventory: ' . $e->getMessage());
+            if ($existingInventory) {
+                return redirect()->back()->withErrors(['namabarang' => 'Nama barang sudah ada.'])->withInput();
+            }
+    
+            // Logika penyimpanan inventory baru
+            $lastInventory = Inventory::orderBy('id', 'desc')->first();
+            $newInventoryId = $lastInventory ? $lastInventory->id + 1 : 1;
+    
+            $inventory = Inventory::create([
+                'id' => $newInventoryId,
+                'name' => $data['namabarang'],
+                'description' => $data['description'],
+            ]);
             
-            return redirect()->route('inventory.index')->with('error', 'Terjadi kesalahan saat menambahkan data');
+            $data['inventory_id'] = $inventory->id;
         }
+    
+        // Simpan Incoming Inventory
+        IncomingInventory::create([
+            'inventory_id' => $data['inventory_id'],
+            'quantity' => $data['quantity'],
+            'supplier' => $data['supplier'],
+            'received_date' => $data['tanggal_masuk'],
+        ]);
+    
+        // Jika sukses, beri pesan sukses
+        return redirect()->route('inventory.index')->with('success', 'Data berhasil ditambahkan');
     }
+
+    public function destroy($id)
+    {
+        // Cari incoming inventory berdasarkan ID
+        $incomingInventory = IncomingInventory::findOrFail($id);
+    
+        // Hapus incoming inventory
+        $incomingInventory->delete();
+    
+        // Kembali ke halaman sebelumnya dengan pesan sukses
+        return redirect()->route('inventory.index')->with('success', 'Data berhasil dihapus');
+    }
+
+    public function print($id)
+{
+    // Cari data berdasarkan ID
+    $incomingInventory = IncomingInventory::findOrFail($id);
+
+    // Kirim data ke view untuk dicetak
+    return view('inventory.pdfIncomingData', compact('incomingInventory'));
+}
+
+    
+
+    
+    
+    
+    
+    
     
 }

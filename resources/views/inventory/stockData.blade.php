@@ -3,7 +3,7 @@
         <h1>STOCK DATA</h1>
     </div>
 
-    <div class="py-12">
+    <div class="py-8 md:py-12 lg:py-16">
         <!-- Pemberitahuan jika stok barang menipis -->
         @if($stockData->contains(function($data) { return $data->total_quantity < 5; }))
             <div class="alert alert-warning d-flex align-items-center">
@@ -63,18 +63,46 @@
         </div>
     </div>
 
-    <div class="py-12">
+    <div class="py-8 md:py-12 lg:py-16">
         <h2>Grafik Incoming dan Outcoming per Bulan</h2>
         <div id="inventoryChart" style="width:100%; height:400px;"></div>
-
+    
+        <!-- Tabel Horizontal -->
+        <div class="mt-8 overflow-x-auto">
+            <table class="min-w-max table-auto border-collapse border border-gray-300">
+                <thead>
+                    <tr class="bg-gray-100">
+                        <th class="px-4 py-2 border">Kategori</th>
+                        @foreach($months as $month)
+                            <th class="px-4 py-2 border">{{ $month }}</th>
+                        @endforeach
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="px-4 py-2 border">Incoming Quantity</td>
+                        @foreach($incomingQuantities as $quantity)
+                            <td class="px-4 py-2 border">{{ $quantity }}</td>
+                        @endforeach
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2 border">Outcoming Quantity</td>
+                        @foreach($outcomingQuantities as $quantity)
+                            <td class="px-4 py-2 border">{{ $quantity }}</td>
+                        @endforeach
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    
         <script src="https://code.highcharts.com/highcharts.js"></script>
-
+    
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 // Cek apakah data sudah dikirim dengan benar
                 console.log('Incoming Quantities:', @json($incomingQuantities));
                 console.log('Outcoming Quantities:', @json($outcomingQuantities));
-
+    
                 // Membuat grafik menggunakan Highcharts
                 Highcharts.chart('inventoryChart', {
                     title: {
@@ -93,14 +121,17 @@
                     },
                     series: [{
                         name: 'Incoming Inventory',
-                        data: @json($incomingQuantities)  // Pastikan data incoming dikirim dengan benar
+                        data: @json($incomingQuantities) 
                     }, {
                         name: 'Outcoming Inventory',
-                        data: @json($outcomingQuantities)  // Pastikan data outcoming dikirim dengan benar
+                        data: @json($outcomingQuantities),
+                        color: '#FFA500' 
                     }]
                 });
             });
         </script>
     </div>
+    
+    
 
 </x-app-layout>
