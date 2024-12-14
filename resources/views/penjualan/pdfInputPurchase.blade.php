@@ -1,4 +1,7 @@
-<!DOCTYPE html>
+
+
+
+        <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
@@ -73,20 +76,24 @@
     <table>
         <thead>
             <tr>
-                <th>Kode Supplier</th>
-                <th>Kode Barang</th>
-                <th>Nama Barang</th>
-                <th>Tanggal Keluar</th>
-                <th>Qty</th>
+              <th scope="col">ID</th>
+              <th scope="col">Nama Barang</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Harga</th>
+              <th scope="col">Total Harga</th>
+              <th scope="col">Tujuan</th>
+              <th scope="col">Tanggal Keluar</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>{{ $outgoingInventory->id }}</td>
-                <td>{{ $outgoingInventory->inventory->name }}</td>
-                <td>{{ $outgoingInventory->quantity }}</td>
-                <td>{{ $outgoingInventory->receiver }}</td>
-                <td>{{ \Carbon\Carbon::parse($outgoingInventory->issued_date)->format('d F Y') }}</td>
+              <td>{{ $outgoingInventory->id }}</td>
+              <td>{{ $outgoingInventory->inventory->name ?? 'Tidak ada' }}</td>
+              <td>{{ $outgoingInventory->quantity }}</td>
+              <td>Rp. {{ number_format($outgoingInventory->harga, 0, ',', '.') }}</td>
+              <td>Rp. {{ number_format($outgoingInventory->harga * $outgoingInventory->quantity, 0, ',', '.') }}</td>                                
+              <td>{{ $outgoingInventory->receiver }}</td>
+              <td>{{ \Carbon\Carbon::parse($outgoingInventory->issued_date)->format('d F Y') }}</td>
             </tr>
             <!-- Tambahkan baris lainnya di sini -->
         </tbody>

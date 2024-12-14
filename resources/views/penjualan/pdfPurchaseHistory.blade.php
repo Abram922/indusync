@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Laporan Penerimaan Barang</title>
+  <title>Laporan History Sales</title>
   <style>
     /* Styling yang telah disesuaikan sebelumnya */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background-color:white;
+      background-color: #f4f4f4;
     }
     .header {
       text-align: center;
@@ -66,33 +66,37 @@
   </div>
 
   <div class="content">
-    <h3>LAPORAN PENGELUARAN BARANG</h3>
+    <h3>LAPORAN RIWAYAT PURCHASE</h3>
     <p><strong>Tanggal Cetak:</strong> {{ \Carbon\Carbon::now()->format('d/m/Y') }} &emsp;&emsp; <strong>Halaman:</strong> 1</p>
     <p><strong>Dicetak Oleh:</strong> Gudang</p>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Kode Supplier</th>
-                <th>Kode Barang</th>
-                <th>Nama Barang</th>
-                <th>Tanggal Keluar</th>
-                <th>Qty</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>{{ $outgoingInventory->id }}</td>
-                <td>{{ $outgoingInventory->inventory->name }}</td>
-                <td>{{ $outgoingInventory->quantity }}</td>
-                <td>{{ $outgoingInventory->receiver }}</td>
-                <td>{{ \Carbon\Carbon::parse($outgoingInventory->issued_date)->format('d F Y') }}</td>
-            </tr>
-            <!-- Tambahkan baris lainnya di sini -->
-        </tbody>
+    <table id="reportTable">
+      <thead>
+        <tr>
+          <th scope="col">Kode Barang</th>
+          <th scope="col">Nama Barang</th>
+          <th scope="col">Supplier</th>
+          <th scope="col">Quantity</th>
+          <th scope="col">Tanggal Pembelian</th>
+          <th scope="col">Tanggal Penjualan</th>
+          <th scope="col">Status</th>
+          <th scope="col">No.Resi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ $purchase->inventory->id ?? 'Tidak ada' }}</td>
+          <td>{{ $purchase->inventory->name ?? 'Tidak ada' }}</td>
+          <td>{{ $purchase->supllier }}</td>
+          <td>{{ $purchase->quantity }}</td>
+          <td>{{ $purchase->tanggalPembelian }}</td>
+          <td>{{ $purchase->tanggalPengiriman }}</td>
+          <td>{{ $purchase->status->status ?? 'Tidak ada' }}</td>
+          <td>{{ $purchase->resi }}</td>
+        </tr>
+      </tbody>
     </table>
   </div>
 
-  
 </body>
 </html>

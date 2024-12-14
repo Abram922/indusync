@@ -37,5 +37,10 @@ class Inventory extends Model
     {
         return $this->belongsTo(Inventory::class);
     }
+
+    public function purchases()
+    {
+        return $this->hasMany(Purchase::class);
+    }
 }
 

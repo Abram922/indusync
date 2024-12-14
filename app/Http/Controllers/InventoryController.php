@@ -8,6 +8,7 @@ use App\Models\OutcomingInventory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log; 
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 use Illuminate\Support\Facades\DB;
 
@@ -77,6 +78,29 @@ use Illuminate\Support\Facades\DB;
         return view('inventory.stockData', compact('stockData', 'months', 'incomingQuantities', 'outcomingQuantities'));
     }
 
+    public function update(Request $request, IncomingInventory $inventory)
+    {
+        // Validasi data input
+        $validatedData = $request->validate([
+            'inventory_id' => 'integer|exists:incoming_inventories,id',
+            'namabarang' => 'string|max:255',
+            'description' => 'nullable|string|max:500',
+            'quantity' => 'integer|min:1',
+            'supplier' => 'string|max:255',
+            'tanggal_masuk' => 'date',
+            'keterangan' => 'nullable|string|max:255',
+        ]);
+
+        // Pengelolaan error saat proses update
+        try {
+            $inventory->update($validatedData);
+            return redirect()->route('inventory.incomingItemData')->with('success', 'Item berhasil diperbarui.');
+        } catch (\Exception $e) {
+            // Jika terjadi error, alihkan kembali dengan pesan error
+            return back()->withErrors(['error' => 'Gagal memperbarui item: ' . $e->getMessage()]);
+        }
+    }
+
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -134,15 +158,22 @@ use Illuminate\Support\Facades\DB;
         return redirect()->route('inventory.index')->with('success', 'Data berhasil dihapus');
     }
 
+
+
+
     public function print($id)
-{
-    // Cari data berdasarkan ID
-    $incomingInventory = IncomingInventory::findOrFail($id);
+    {
+        // Mengambil data pembelian dengan relasi 'inventory' dan 'status'
+        $incomingInventory = IncomingInventory::findOrFail($id);
 
-    // Kirim data ke view untuk dicetak
-    return view('inventory.pdfIncomingData', compact('incomingInventory'));
-}
-
+        //dd($purchase);
+        
+        // Menyiapkan data untuk PDF
+        $pdf = Pdf::loadView('inventory.pdfIncomingData', compact('incomingInventory'));
+        
+        // Mengunduh PDF
+        return $pdf->download('OutGoingData'.$incomingInventory->id.'.pdf');
+    }
     
 
     

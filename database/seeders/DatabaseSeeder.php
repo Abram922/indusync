@@ -16,6 +16,8 @@ class DatabaseSeeder extends Seeder
         $this->call([InventorySeeder::class]);
         $this->call([IncomingDataSeeder::class]);
         $this->call([OutcomingInventoriesSeeder::class]);
+        $this->call([status::class]);
+
 
 
 

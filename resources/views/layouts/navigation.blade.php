@@ -51,17 +51,20 @@
                 </button>
                 <!-- Penjualan Submenu -->
                 <div x-show="open" class="ml-6">
-                    <x-nav-link class="block w-full px-7 py-2 text-white hover:bg-blue-600">
+                    <x-nav-link :href="route('penjualan.inputSales')" class="block w-full px-7 py-2 text-white hover:bg-blue-600">
                         {{ __('Input Sales') }}
                     </x-nav-link>
-                    <x-nav-link class="block w-full  px-7 py-2 text-white hover:bg-blue-600">
+                    <x-nav-link  :href="route('penjualan.salesHistory')" class="block w-full  px-7 py-2 text-white hover:bg-blue-600">
                         {{ __('Sales History') }}
                     </x-nav-link>
-                    <x-nav-link class="block w-full px-7 py-2 text-white hover:bg-blue-600">
+                    <x-nav-link :href="route('penjualan.inputPurchase')" class="block w-full px-7 py-2 text-white hover:bg-blue-600">
+                        {{ __('Input Purchase') }}
+                    </x-nav-link>
+                    <x-nav-link  :href="route('penjualan.purchaseHistory')"   class="block w-full px-7 py-2 text-white hover:bg-blue-600">
                         {{ __('Purchase History') }}
                     </x-nav-link>
-                    <x-nav-link class="block w-full px-7 py-2 text-white hover:bg-blue-600">
-                        {{ __('Input Purchase') }}
+                    <x-nav-link  :href="route('outgoing.financialRecap')"   class="block w-full px-7 py-2 text-white hover:bg-blue-600">
+                        {{ __('Financial Recap') }}
                     </x-nav-link>
                 </div>
             </div>

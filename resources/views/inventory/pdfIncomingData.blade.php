@@ -10,7 +10,7 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #f4f4f4;
+      background-color: white;
     }
     .header {
       text-align: center;
@@ -90,71 +90,6 @@
     </table>
   </div>
 
-  <button onclick="downloadPDF()">Print PDF</button>
-
-  <script>
-    function downloadPDF() {
-      const { jsPDF } = window.jspdf;
-      
-      // Membuat instance jsPDF dengan ukuran halaman A4 (210mm x 297mm)
-      const doc = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
-      });
-      
-      // Menambahkan kop surat ke PDF
-      doc.setFontSize(18);
-      doc.text("CV. GANESH CUSTOM SHOP", 105, 20, null, null, 'center');
-      doc.setFontSize(14);
-      doc.text("Clothing Shop", 105, 30, null, null, 'center');
-      doc.setFontSize(12);
-      doc.text("Jalan Ngurah Rai no 48 Kediri Tabanan Bali\nBali - Indonesia", 105, 40, null, null, 'center');
-      doc.text("Telp. (0361)-8759357", 105, 50, null, null, 'center');
-      doc.line(10, 55, 200, 55);  // Menambahkan garis horizontal
-      
-      // Menambahkan judul laporan
-      doc.setFontSize(16);
-      doc.text("LAPORAN PENERIMAAN BARANG", 105, 60, null, null, 'center');
-      
-      // Menambahkan tanggal dan halaman
-      doc.setFontSize(12);
-      doc.text(`Tanggal Cetak: ${new Date().toLocaleDateString()}`, 10, 70);
-      doc.text(`Halaman: 1`, 190, 70, null, null, 'right');
-      
-      // Menambahkan tabel ke PDF
-      const table = document.getElementById('reportTable');
-      const rows = table.querySelectorAll('tr');
-      
-      let y = 80; // Mulai menulis konten dari posisi 80mm dari atas
-      
-      // Menambahkan header tabel
-      let x = 10;
-      rows[0].querySelectorAll('th').forEach((th, index) => {
-        doc.setFontSize(10);
-        doc.text(th.textContent, x, y);
-        x += 50;  // Jarak antar kolom
-      });
-      
-      y += 10;  // Jarak antar baris
-      
-      // Menambahkan data tabel
-      rows.forEach((row, rowIndex) => {
-        if (rowIndex > 0) {  // Skip header row
-          const cells = row.querySelectorAll('td');
-          x = 10; // Reset x untuk setiap baris
-          cells.forEach((td, index) => {
-            doc.text(td.textContent, x, y);
-            x += 50;  // Jarak antar kolom
-          });
-          y += 10; // Jarak antar baris
-        }
-      });
-      
-      // Menyimpan dan mendownload PDF
-      doc.save('laporan_penerimaan_barang.pdf');
-    }
-  </script>
   
 </body>
 </html>

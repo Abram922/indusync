@@ -8,6 +8,9 @@ use App\Http\Controllers\OutcomingInventoryController;
 use App\Http\Controllers\OutGoingInventroyController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Owner\OwnerController;
+use App\Http\Controllers\SalesController;
+use App\Http\Controllers\PurchaseController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +32,7 @@ Route::get('/', function () {
 // })->middleware(middleware: ['auth', 'verified','role:owner'])->name('dashboard');
 // setelah diperksa maka kesini 
 
+
 Route::middleware(['auth', 'verified'])->group(function () {
     
     // Middleware untuk role admin
@@ -44,7 +48,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
         Route::delete('/inventory/{id}', [InventoryController::class, 'destroy'])->name('inventory.destroy');
         Route::get('/inventory/print/{id}', [InventoryController::class, 'print'])->name('inventory.print');
+        Route::put('/incominginventory/{inventory}', [InventoryController::class, 'update'])->name('incominginventory.update');
 
+        
+        
 
         Route::get('/stockData', [InventoryController::class, 'stockData'])->name('inventory.stockData');
 
@@ -53,12 +60,34 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/outgoing/store', [OutGoingInventroyController::class, 'store'])->name('outgoing.store');
         Route::delete('/outgoing/{id}', [OutGoingInventroyController::class, 'destroy'])->name('outgoing.destroy');
         Route::get('/outgoing/print/{id}', [OutGoingInventroyController::class, 'print'])->name('outgoing.print');
+        Route::get('/financialRecap', [OutGoingInventroyController::class, 'financialRecap'])->name('outgoing.financialRecap');
 
+        
+        //Sales
+        Route::get('/inputSales', [OutGoingInventroyController::class, 'inputsales'])->name('penjualan.inputSales');
+        Route::get('/inputSales/print/{id}', [OutGoingInventroyController::class, 'printSales'])->name('inputSales.print');
+        Route::put('inputSales/{outgoing}', [OutGoingInventroyController::class, 'update'])->name('inputSales.update');
+
+        Route::post('/inputSales/store', [SalesController::class, 'store'])->name('penjualan.store');
+        Route::delete('/inputSales/{id}', [SalesController::class, 'destroy'])->name('penjualan.destroy');
+        Route::get('/salesHistory', [SalesController::class, 'salesHistory'])->name('penjualan.salesHistory');
+
+
+        //Purchase
+        Route::get('/inputPurchase', [PurchaseController::class, 'index'])->name('penjualan.inputPurchase');
+        Route::put('inputSales/{outgoing}', [PurchaseController::class, 'update'])->name('purchase.update');
+        
+        
+        Route::post('/inputPurchase/store', [PurchaseController::class, 'store'])->name('inputPurchase.store');
+        Route::post('/purchase/{purchase}/update-status', [PurchaseController::class, 'updateStatus'])->name('purchase.updateStatus');
+        Route::delete('/purchase/{purchase}', [PurchaseController::class, 'destroy'])->name('purchase.destroy');
+        Route::get('/purchaseHistory', [PurchaseController::class, 'historyPurchase'])->name('penjualan.purchaseHistory');
+        Route::get('/purchase/print/{id}', [PurchaseController::class, 'print'])->name('penjualan.print');
 
 
     });
     
-    // Middleware untuk role owner
+    // Middleware untuk role o
     Route::middleware(['role:owner'])->group(function () {
         Route::get('/dashboard', function () {
             return view('dashboard');
