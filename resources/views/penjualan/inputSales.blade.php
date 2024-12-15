@@ -142,7 +142,7 @@
                         <h5 class="modal-title" id="editModalLabel{{ $outgoing->id }}">Edit Outgoing Item</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form action="{{ route('inputSales.update', $outgoing->id) }}" method="POST">
+                    <form action="{{ route('updateSales.update', $outgoing->id) }}" method="POST">
                         @csrf
                         @method('PUT')
                         <div class="modal-body">

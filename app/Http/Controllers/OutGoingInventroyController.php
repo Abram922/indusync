@@ -73,9 +73,42 @@ class OutGoingInventroyController extends Controller
     
             return $inventory;
         });
-    
+
+        
         // Mengirim data ke view
         return view('inventory.outgoingItemData', compact('inventoriesWithStock', 'incomingInventories', 'outgoingInventories'));
+    }
+
+    public function salesHistory()
+    {
+        // Mengambil semua data dari tabel inventories
+        $inventories = Inventory::all();
+    
+        // Mengambil data incoming_inventories yang stoknya lebih dari 0
+        $incomingInventories = IncomingInventory::with('inventory')
+            ->where('quantity', '>', 0)  // Filter stok lebih dari 0
+            ->get();
+    
+        // Mengambil semua data dari tabel outgoing_inventories
+        $outgoingInventories = OutcomingInventory::with('inventory')->get();
+    
+        // Menghitung stok untuk setiap inventory
+        $inventoriesWithStock = $inventories->map(function ($inventory) use ($incomingInventories, $outgoingInventories) {
+            // Menghitung total incoming untuk masing-masing inventory
+            $totalIncoming = $incomingInventories->where('inventory_id', $inventory->id)->sum('quantity');
+    
+            // Menghitung total outgoing untuk masing-masing inventory
+            $totalOutgoing = $outgoingInventories->where('inventory_id', $inventory->id)->sum('quantity');
+    
+            // Menghitung total stok = incoming - outgoing
+            $inventory->total_stock = $totalIncoming - $totalOutgoing;
+    
+            return $inventory;
+        });
+
+        
+        // Mengirim data ke view
+        return view('penjualan.salesHistory', compact('inventoriesWithStock', 'incomingInventories', 'outgoingInventories'));
     }
 
     public function inputsales()
@@ -270,9 +303,65 @@ class OutGoingInventroyController extends Controller
         $pdf = Pdf::loadView('penjualan.pdfInputPurchase', compact('outgoingInventory'));
         
         // Mengunduh PDF
-        return $pdf->download('InputSales'.$outgoingInventory->id.'.pdf');
+        return $pdf->download('salesHistory'.$outgoingInventory->id.'.pdf');
+    }
+
+    public function printSalesByMonth($month, $year)
+    {
+        // Validasi parameter bulan dan tahun
+        if (!is_numeric($month) || $month < 1 || $month > 12) {
+            abort(400, 'Bulan tidak valid');
+        }
+    
+        if (!is_numeric($year) || $year < 2000 || $year > now()->year) {
+            abort(400, 'Tahun tidak valid');
+        }
+    
+        // Mengambil data berdasarkan bulan dan tahun
+        $outcomingInventories = OutcomingInventory::whereMonth('issued_date', $month)
+            ->whereYear('issued_date', $year)
+            ->get();
+    
+        // Jika tidak ada data, tampilkan pesan error
+        if ($outcomingInventories->isEmpty()) {
+            return back()->with('error', 'Tidak ada data untuk bulan dan tahun yang dipilih.');
+        }
+    
+        // Menyiapkan PDF
+        $pdf = Pdf::loadView('penjualan.pdfMonthSales', compact('outcomingInventories', 'month', 'year'));
+    
+        // Mengunduh PDF
+        return $pdf->download('SalesData_' . $month . '_' . $year . '.pdf');
     }
     
+
+    public function printByMonth($month, $year)
+    {
+        // Validasi parameter bulan dan tahun
+        if (!is_numeric($month) || $month < 1 || $month > 12) {
+            abort(400, 'Bulan tidak valid');
+        }
+    
+        if (!is_numeric($year) || $year < 2000 || $year > now()->year) {
+            abort(400, 'Tahun tidak valid');
+        }
+    
+        // Mengambil data berdasarkan bulan dan tahun
+        $outcomingInventories = OutcomingInventory::whereMonth('issued_date', $month)
+            ->whereYear('issued_date', $year)
+            ->get();
+    
+        // Jika tidak ada data, tampilkan pesan error
+        if ($outcomingInventories->isEmpty()) {
+            return back()->with('error', 'Tidak ada data untuk bulan dan tahun yang dipilih.');
+        }
+    
+        // Menyiapkan PDF
+        $pdf = Pdf::loadView('inventory.pdfMonthOutcoming', compact('outcomingInventories', 'month', 'year'));
+    
+        // Mengunduh PDF
+        return $pdf->download('OutcomingData_' . $month . '_' . $year . '.pdf');
+    }
 
     
 }

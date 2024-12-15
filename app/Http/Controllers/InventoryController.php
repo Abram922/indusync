@@ -103,48 +103,71 @@ use Illuminate\Support\Facades\DB;
 
     public function store(Request $request)
     {
+        // Debug request untuk memastikan semua data diterima
+        \Log::info('Request data:', $request->all());
+
+        // Validasi data
         $data = $request->validate([
-            'inventory_id' => 'integer',
-            'namabarang' => 'string',
+            'inventory_id' => 'required|integer',
+            'namabarang' => 'nullable|string',
             'description' => 'nullable|string',
-            'quantity' => 'integer',
-            'supplier' => 'string',
-            'tanggal_masuk' => 'date',
-            'keterangan' => 'nullable|string',
+            'quantity' => 'required|integer',
+            'supplier' => 'required|string',
+            'tanggal_masuk' => 'required|date',
         ]);
-    
-        if ($data['inventory_id'] == '0') {
+
+        // Log hasil validasi
+        \Log::info('Data setelah validasi:', $data);
+
+        // Proses jika inventory_id adalah 0 (barang baru)
+        if ($data['inventory_id'] == 0) {
             // Periksa apakah nama barang sudah ada
             $existingInventory = Inventory::where('name', $data['namabarang'])->first();
             
             if ($existingInventory) {
-                return redirect()->back()->withErrors(['namabarang' => 'Nama barang sudah ada.'])->withInput();
+                return redirect()->back()
+                    ->withErrors(['namabarang' => 'Nama barang sudah ada.'])
+                    ->withInput();
             }
-    
-            // Logika penyimpanan inventory baru
+
+            // Buat ID baru untuk inventory
             $lastInventory = Inventory::orderBy('id', 'desc')->first();
             $newInventoryId = $lastInventory ? $lastInventory->id + 1 : 1;
-    
+
             $inventory = Inventory::create([
                 'id' => $newInventoryId,
                 'name' => $data['namabarang'],
                 'description' => $data['description'],
             ]);
-            
+
+            // Set inventory_id ke barang yang baru dibuat
             $data['inventory_id'] = $inventory->id;
+
+            \Log::info('Inventory baru dibuat:', $inventory->toArray());
         }
-    
+
         // Simpan Incoming Inventory
-        IncomingInventory::create([
-            'inventory_id' => $data['inventory_id'],
-            'quantity' => $data['quantity'],
-            'supplier' => $data['supplier'],
-            'received_date' => $data['tanggal_masuk'],
-        ]);
-    
+        try {
+            $incomingInventory = IncomingInventory::create([
+                'inventory_id' => $data['inventory_id'],
+                'quantity' => $data['quantity'],
+                'supplier' => $data['supplier'],
+                'received_date' => $data['tanggal_masuk'], // Format sudah sesuai
+            ]);
+
+            \Log::info('Incoming Inventory berhasil disimpan:', $incomingInventory->toArray());
+        } catch (\Exception $e) {
+            \Log::error('Gagal menyimpan Incoming Inventory: ' . $e->getMessage());
+            return redirect()->back()
+                ->withErrors(['error' => 'Gagal menyimpan data. Silakan coba lagi.'])
+                ->withInput();
+        }
+
         // Jika sukses, beri pesan sukses
         return redirect()->route('inventory.index')->with('success', 'Data berhasil ditambahkan');
     }
+
+
 
     public function destroy($id)
     {
@@ -154,7 +177,7 @@ use Illuminate\Support\Facades\DB;
         // Hapus incoming inventory
         $incomingInventory->delete();
     
-        // Kembali ke halaman sebelumnya dengan pesan sukses
+        // incominmbali ke halaman sebelumnya dengan pesan sukses
         return redirect()->route('inventory.index')->with('success', 'Data berhasil dihapus');
     }
 
@@ -177,7 +200,35 @@ use Illuminate\Support\Facades\DB;
     
 
     
+    public function printByMonth($month, $year)
+    {
+        // Validasi parameter bulan dan tahun
+        if (!is_numeric($month) || $month < 1 || $month > 12) {
+            abort(400, 'Bulan tidak valid');
+        }
     
+        if (!is_numeric($year) || $year < 2000 || $year > now()->year) {
+            abort(400, 'Tahun tidak valid');
+        }
+    
+        // Mengambil data berdasarkan bulan dan tahun
+        $incomingInventories = IncomingInventory::whereMonth('created_at', $month)
+            ->whereYear('created_at', $year)
+            ->get();
+    
+        // Jika tidak ada data, tampilkan pesan error
+        if ($incomingInventories->isEmpty()) {
+            return back()->with('error', 'Tidak ada data untuk bulan dan tahun yang dipilih.');
+        }
+    
+        // Menyiapkan PDF
+        $pdf = Pdf::loadView('inventory.pdfMonthIncoming', compact('incomingInventories', 'month', 'year'));
+    
+        // Mengunduh PDF
+        return $pdf->download('IncomingData_' . $month . '_' . $year . '.pdf');
+    }
+    
+
     
     
     

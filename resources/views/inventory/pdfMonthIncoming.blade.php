@@ -10,7 +10,7 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background-color:white;
+      background-color: white;
     }
     .header {
       text-align: center;
@@ -66,30 +66,30 @@
   </div>
 
   <div class="content">
-    <h3>LAPORAN PENGELUARAN BARANG</h3>
+    <h3>LAPORAN PENERIMAAN BARANG</h3>
     <p><strong>Tanggal Cetak:</strong> {{ \Carbon\Carbon::now()->format('d/m/Y') }} &emsp;&emsp; <strong>Halaman:</strong> 1</p>
     <p><strong>Dicetak Oleh:</strong> Gudang</p>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Kode Barang</th>
-                <th>Kode Barang</th>
-                <th>Qty</th>
-                <th>Receiver</th>
-                <th>Tanggal Keluar</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>{{ $outgoingInventory->id }}</td>
-                <td>{{ $outgoingInventory->inventory->name }}</td>
-                <td>{{ $outgoingInventory->quantity }}</td>
-                <td>{{ $outgoingInventory->receiver }}</td>
-                <td>{{ \Carbon\Carbon::parse($outgoingInventory->issued_date)->format('d F Y') }}</td>
-            </tr>
-            <!-- Tambahkan baris lainnya di sini -->
-        </tbody>
+    <table id="reportTable">
+      <thead>
+        <tr>
+          <th>Kode Supplier</th>
+          <th>Kode Barang</th>
+          <th>Nama Barang</th>
+          <th>Tanggal Masuk</th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach ($incomingInventories as $inventory)
+          <tr>
+            <td>{{ $inventory->supplier }}</td>
+            <td>{{ $inventory->inventory->id }}</td>
+            <td>{{ $inventory->inventory->name }}</td>
+            <td>{{ \Carbon\Carbon::parse($inventory->received_at)->format('d F Y') }}</td>
+          </tr>
+        @endforeach
+      </tbody>
+      
     </table>
   </div>
 

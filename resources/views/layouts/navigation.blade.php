@@ -3,8 +3,8 @@
     <nav class="w-64 bg-[#132A84] text-white">
         <!-- Logo -->
         <div class="flex items-center justify-center h-16 border-b border-gray-700">
-            <a href="{{ route('dashboard') }}">
-                <x-application-logo class="block h-9 w-auto fill-current text-white" />
+            <a href="{{ route('dashboard') }}" style="margin-top: 30px">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo" width="150" height="150" class="d-inline-block align-text-top">
             </a>
         </div>
 

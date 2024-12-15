@@ -81,6 +81,35 @@ class PurchaseController extends Controller
     }
     
 
+    public function printByMonth($month, $year)
+{
+    // Validasi parameter bulan dan tahun
+    if (!is_numeric($month) || $month < 1 || $month > 12) {
+        abort(400, 'Bulan tidak valid');
+    }
+
+    if (!is_numeric($year) || $year < 2000 || $year > now()->year) {
+        abort(400, 'Tahun tidak valid');
+    }
+
+    // Mengambil data pembelian berdasarkan bulan dan tahun
+    $purchases = Purchase::whereMonth('created_at', $month)
+        ->whereYear('created_at', $year)
+        ->get();
+
+    // Jika tidak ada data, tampilkan pesan error
+    if ($purchases->isEmpty()) {
+        return back()->with('error', 'Tidak ada data pembelian untuk bulan dan tahun yang dipilih.');
+    }
+
+    // Menyiapkan PDF
+    $pdf = Pdf::loadView('penjualan.pdfPurchaseHistoryMonth', compact('purchases', 'month', 'year'));
+
+    // Mengunduh PDF
+    return $pdf->download('purchaseHistory_'.$month.'_'.$year.'.pdf');
+}
+
+
 
         // app/Http/Controllers/PurchaseController.php
     public function updateStatus($id)

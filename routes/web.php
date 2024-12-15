@@ -48,8 +48,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
         Route::delete('/inventory/{id}', [InventoryController::class, 'destroy'])->name('inventory.destroy');
         Route::get('/inventory/print/{id}', [InventoryController::class, 'print'])->name('inventory.print');
-        Route::put('/incominginventory/{inventory}', [InventoryController::class, 'update'])->name('incominginventory.update');
-
+        Route::put('/incominginventory/{inventory}', [InventoryController::class, 'update'])->name('incominginventory.update'); 
+        Route::get('/inventory/print-by-month/{month}/{year}', [InventoryController::class, 'printByMonth'])
+        ->name('printByMonth');
+    
         
         
 
@@ -61,21 +63,29 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/outgoing/{id}', [OutGoingInventroyController::class, 'destroy'])->name('outgoing.destroy');
         Route::get('/outgoing/print/{id}', [OutGoingInventroyController::class, 'print'])->name('outgoing.print');
         Route::get('/financialRecap', [OutGoingInventroyController::class, 'financialRecap'])->name('outgoing.financialRecap');
-
+        Route::get('/outgoing/print-by-month/{month}/{year}', [OutGoingInventroyController::class, 'printByMonth'])
+        ->name('outgoing.printByMonth');
         
         //Sales
         Route::get('/inputSales', [OutGoingInventroyController::class, 'inputsales'])->name('penjualan.inputSales');
         Route::get('/inputSales/print/{id}', [OutGoingInventroyController::class, 'printSales'])->name('inputSales.print');
-        Route::put('inputSales/{outgoing}', [OutGoingInventroyController::class, 'update'])->name('inputSales.update');
+        Route::put('/updateSales/{outgoing}', [OutGoingInventroyController::class, 'update'])->name('updateSales.update');
+        Route::get('/salesHistory', [OutGoingInventroyController::class, 'salesHistory'])->name('penjualan.salesHistory');
+        Route::get('/sales/print-sales-by-month/{month}/{year}', [OutGoingInventroyController::class, 'printSalesByMonth'])
+        ->name('sales.printByMonth');
+        
+
+
 
         Route::post('/inputSales/store', [SalesController::class, 'store'])->name('penjualan.store');
         Route::delete('/inputSales/{id}', [SalesController::class, 'destroy'])->name('penjualan.destroy');
-        Route::get('/salesHistory', [SalesController::class, 'salesHistory'])->name('penjualan.salesHistory');
 
 
         //Purchase
         Route::get('/inputPurchase', [PurchaseController::class, 'index'])->name('penjualan.inputPurchase');
         Route::put('inputSales/{outgoing}', [PurchaseController::class, 'update'])->name('purchase.update');
+        Route::get('/inputPurchase/print-by-month/{month}/{year}', [PurchaseController::class, 'printByMonth'])
+        ->name('inputPurchase.printByMonth');
         
         
         Route::post('/inputPurchase/store', [PurchaseController::class, 'store'])->name('inputPurchase.store');

@@ -14,13 +14,81 @@
       <h1>INCOMING ITEM DATA</h1>
     </div>
 
-    <div>
+    <div class="d-flex justify-content-between">
       <button type="button" class="btn btn-success mt-2 mb-2"
         style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"
         data-bs-toggle="modal" data-bs-target="#exampleModal">
-        Tambah Data 
-      </button>       
+        Tambah Data
+      </button>
+      
+      <!-- Tombol Print -->
+      <button type="button" class="btn btn-success mt-2 mb-2" 
+          style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; margin-right: 1rem;"
+          data-bs-toggle="modal" data-bs-target="#printModal">
+          Print
+      </button>
+
+      <!-- Modal Dialog -->
+      <div class="modal fade" id="printModal" tabindex="-1" aria-labelledby="printModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="printModalLabel">Pilih Bulan dan Tahun</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+      <!-- Form di Modal -->
+      <form id="printForm" method="GET">
+        <div class="modal-body">
+            <div class="mb-3">
+                <label for="month" class="form-label">Bulan</label>
+                <select class="form-select" id="month" name="month" required>
+                    <option value="" disabled selected>Pilih Bulan</option>
+                    @for ($i = 1; $i <= 12; $i++)
+                        <option value="{{ $i }}">{{ DateTime::createFromFormat('!m', $i)->format('F') }}</option>
+                    @endfor
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="year" class="form-label">Tahun</label>
+                <select class="form-select" id="year" name="year" required>
+                    <option value="" disabled selected>Pilih Tahun</option>
+                    @for ($year = now()->year; $year >= (now()->year - 5); $year--)
+                        <option value="{{ $year }}">{{ $year }}</option>
+                    @endfor
+                </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            <button type="button" class="btn btn-primary" id="submitPrint">Print</button>
+        </div>
+      </form>
+
+<script>
+  document.getElementById('submitPrint').addEventListener('click', function () {
+      const month = document.getElementById('month').value;
+      const year = document.getElementById('year').value;
+
+      if (month && year) {
+          // Redirect to route with parameters
+          const url = `{{ route('printByMonth', ['month' => ':month', 'year' => ':year']) }}`
+              .replace(':month', month)
+              .replace(':year', year);
+
+          window.location.href = url;
+      } else {
+          alert('Harap pilih bulan dan tahun terlebih dahulu.');
+      }
+  });
+</script>
+
+        </div>
     </div>
+</div>
+
+      
+    </div>
+    
 
     <!-- Modal Tambah Data -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -74,6 +142,7 @@
                 <input type="date" class="form-control" id="tanggal_masuk" name="tanggal_masuk" required>
               </div>
 
+
               <button type="submit" class="btn btn-primary" id="submitBtn" disabled>Simpan</button>
             </form>
           </div>
@@ -100,9 +169,12 @@
       function validateForm() {
         const submitButton = document.getElementById('submitBtn');
         const inventoryId = document.getElementById('inventory_id').value;
-        const namabarang = document.getElementById('namabarang').value;
+        const namabarang = document.getElementById('namabarang').value.trim();
+        const quantity = document.getElementById('quantity').value;  
+        const supplier = document.getElementById('supplier').value.trim();
+        const tanggalMasuk = document.getElementById('tanggal_masuk').value;
 
-        if ((inventoryId !== '0' && inventoryId !== '') || (inventoryId === '0' && namabarang.trim() !== '')) {
+        if ((inventoryId !== '0' && inventoryId !== '') || (inventoryId === '0' && namabarang.trim() !== '') && quantity && supplier && tanggalMasuk) {
           submitButton.disabled = false; // Aktifkan tombol simpan jika data valid
         } else {
           submitButton.disabled = true; // Nonaktifkan tombol simpan jika data tidak valid
@@ -141,9 +213,10 @@
                 <td>
                   <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal{{ $incoming->id }}">Edit</a>
 
-                  <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="setDeleteUrl('{{ route('inventory.destroy', $incoming->id) }}')">
+                  <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModalIncoming{{ $incoming->id }}">
                     Hapus
                   </button>
+                  
 
                   <!-- Modal Konfirmasi Hapus -->
                   <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -217,54 +290,46 @@
                   </div>
 
                   <div class="mb-3">
-                    <label for="received_date_{{ $incoming->id }}" class="form-label">Tanggal Masuk</label>
-                    <input type="date" class="form-control" id="received_date_{{ $incoming->id }}" name="received_date" value="{{ $incoming->received_date }}" required>
+                    <label for="tanggal_masuk_{{ $incoming->id }}" class="form-label">Tanggal Masuk</label>
+                    <input type="date" class="form-control" id="tanggal_masuk_{{ $incoming->id }}" name="tanggal_masuk" value="{{ \Carbon\Carbon::parse($incoming->received_at)->format('Y-m-d') }}" required>
                   </div>
 
                 </div>
+
                 <div class="modal-footer">
-                  <button type="submit" class="btn btn-primary" id="submitBtn_{{ $incoming->id }}" >Simpan</button>
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                  <button type="submit" class="btn btn-primary">Simpan</button>
                 </div>
               </form>
             </div>
           </div>
         </div>
       @endforeach
+
+
+      @foreach($incomingInventories as $incoming)
+  <div class="modal fade" id="deleteModalIncoming{{ $incoming->id }}" tabindex="-1" aria-labelledby="deleteModalLabelIncoming{{ $incoming->id }}" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="deleteModalLabelIncoming{{ $incoming->id }}">Konfirmasi Hapus</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  Apakah Anda yakin ingin menghapus data ini?
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                  <form action="{{ route('inventory.destroy', $incoming->id) }}" method="POST">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" class="btn btn-danger">Hapus</button>
+                  </form>
+              </div>
+          </div>
+      </div>
+  </div>
+@endforeach
+
     </div>
   </div>
-
-  
-  <script>
-    function toggleNewItemFields(id, value) {
-  const newItemFields = document.getElementById('newItemFields_' + id);
-  const namabarang = document.getElementById('namabarang_' + id);
-  
-  if (value === '0') {
-    newItemFields.style.display = 'block'; // Menampilkan input baru
-    namabarang.required = true; // Nama barang harus diisi
-  } else {
-    newItemFields.style.display = 'none'; // Menyembunyikan input baru
-    namabarang.required = false; // Nama barang tidak wajib diisi
-  }
-  
-  validateForm(id); // Memanggil fungsi validasi saat dropdown berubah
-}
-
-function validateForm(id) {
-  const submitButton = document.getElementById('submitBtn_' + id); // Dynamic id
-  const inventoryId = document.getElementById('inventory_id_' + id).value;
-  const namabarang = document.getElementById('namabarang_' + id).value.trim();
-  const quantity = document.getElementById('quantity_' + id).value;  
-  const supplier = document.getElementById('supplier_' + id).value.trim();
-  const tanggalMasuk = document.getElementById('tanggal_masuk_' + id).value;
-
-  if ((inventoryId !== '0' && inventoryId !== '') || (inventoryId === '0' && namabarang !== '') && quantity && supplier && tanggalMasuk) {
-    submitButton.disabled = false; // Aktifkan tombol simpan jika data valid
-  } else {
-    submitButton.disabled = true; // Nonaktifkan tombol simpan jika data tidak valid
-  }
-}
-
-  </script>
 </x-app-layout>
