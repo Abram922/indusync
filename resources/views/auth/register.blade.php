@@ -1,4 +1,13 @@
 <x-guest-layout>
+
+    <div class=" my-6">
+        <!-- Logo -->
+        <img src="{{ asset('images/logo.png') }}" alt="Logo" width="150" height="150" class="d-inline-block align-text-top">
+
+        <!-- Welcome Text -->
+        <p class="text-gray-600">Register</p>
+    </div>
+
     <form method="POST" action="{{ route('register') }}">
         @csrf
 
@@ -43,8 +52,9 @@
             <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
                 {{ __('Already registered?') }}
             </a>
+  
 
-            <x-primary-button class="ms-4">
+            <x-primary-button class="ms-3 bg-green-500 hover:bg-green-600 text-white">
                 {{ __('Register') }}
             </x-primary-button>
         </div>

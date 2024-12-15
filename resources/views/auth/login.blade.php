@@ -1,7 +1,18 @@
 <x-guest-layout>
+    <!-- Logo and Welcome Text -->
+    <div class=" my-6">
+        <!-- Logo -->
+        <img src="{{ asset('images/logo.png') }}" alt="Logo" width="150" height="150" class="d-inline-block align-text-top">
+
+        <!-- Welcome Text -->
+        <h1 class="text-2xl font-bold text-gray-800 mt-4">Hi, Welcome Back!</h1>
+        <p class="text-gray-600">It’s good to see you again</p>
+    </div>
+
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
+    <!-- Login Form -->
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
@@ -17,9 +28,9 @@
             <x-input-label for="password" :value="__('Password')" />
 
             <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
+                          type="password"
+                          name="password"
+                          required autocomplete="current-password" />
 
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
@@ -39,9 +50,10 @@
                 </a>
             @endif
 
-            <x-primary-button class="ms-3">
+            <x-primary-button class="ms-3 bg-green-500 hover:bg-green-600 text-white">
                 {{ __('Log in') }}
             </x-primary-button>
+            
         </div>
     </form>
 </x-guest-layout>
