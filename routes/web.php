@@ -65,6 +65,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/financialRecap', [OutGoingInventroyController::class, 'financialRecap'])->name('outgoing.financialRecap');
         Route::get('/outgoing/print-by-month/{month}/{year}', [OutGoingInventroyController::class, 'printByMonth'])
         ->name('outgoing.printByMonth');
+        Route::get('/financialRecap/pdf', [OutGoingInventroyController::class, 'pdfFinancialRecap'])->name('outgoing.pdfFinancialRecap');
+
         
         //Sales
         Route::get('/inputSales', [OutGoingInventroyController::class, 'inputsales'])->name('penjualan.inputSales');

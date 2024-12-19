@@ -7,6 +7,7 @@ use App\Models\IncomingInventory;
 use App\Models\OutcomingInventory;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Http; // Tambahkan ini di bagian atas controller
 
 
 
@@ -14,37 +15,7 @@ use Illuminate\Http\Request;
 
 class OutGoingInventroyController extends Controller
 {
-    public function financialRecap()
-    {
-        // Mendapatkan data OutcomingInventory
-        $outcomingData = OutcomingInventory::selectRaw('MONTH(issued_date) as month, SUM(harga * quantity) as total_value')
-            ->groupBy('month')
-            ->orderBy('month')
-            ->get();
-    
-        // Mengisi array bulan (1-12) untuk memastikan data konsisten
-        $months = collect(range(1, 12))->map(function ($month) {
-            return Carbon::create()->month($month)->format('F');
-        });
-    
-        // Data total nilai untuk grafik (harga * quantity per bulan)
-        $totalValues = $months->map(function ($month, $index) use ($outcomingData) {
-            $data = $outcomingData->firstWhere('month', $index + 1);
-            return $data ? (int) $data->total_value : 0;  // Ubah menjadi integer
-        });
-    
-        // Data dummy untuk incoming quantities (jika diperlukan)
-        // Anda bisa mengganti dengan data dari tabel lain, misalnya IncomingInventory
-        $incomingQuantities = $months->map(function () {
-            return rand(100, 500); // Data simulasi
-        });
-    
-        return view('penjualan.financialRecap', [
-            'months' => $months,
-            'incomingQuantities' => $incomingQuantities,
-            'totalValues' => $totalValues,  // Pastikan ini dikirim ke view
-        ]);
-    }
+ 
     
     public function index()
     {
@@ -291,7 +262,101 @@ class OutGoingInventroyController extends Controller
         // Mengunduh PDF
         return $pdf->download('OutGoingData'.$outgoingInventory->id.'.pdf');
     }
+
+
+    public function financialRecap()
+    {
+        // Mendapatkan data OutcomingInventory
+        $outcomingData = OutcomingInventory::selectRaw('MONTH(issued_date) as month, SUM(harga * quantity) as total_value')
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get();
     
+        // Mengisi array bulan (1-12) untuk memastikan data konsisten
+        $months = collect(range(1, 12))->map(function ($month) {
+            return Carbon::create()->month($month)->format('F');
+        });
+    
+        // Data total nilai untuk grafik (harga * quantity per bulan)
+        $totalValues = $months->map(function ($month, $index) use ($outcomingData) {
+            $data = $outcomingData->firstWhere('month', $index + 1);
+            return $data ? (int) $data->total_value : 0;  // Ubah menjadi integer
+        });
+    
+        // Data dummy untuk incoming quantities (jika diperlukan)
+        // Anda bisa mengganti dengan data dari tabel lain, misalnya IncomingInventory
+        $incomingQuantities = $months->map(function () {
+            return rand(100, 500); // Data simulasi
+        });
+    
+        return view('penjualan.financialRecap', [
+            'months' => $months,
+            'incomingQuantities' => $incomingQuantities,
+            'totalValues' => $totalValues,  // Pastikan ini dikirim ke view
+        ]);
+    }
+    
+
+    public function pdfFinancialRecap()
+    {
+        // Mendapatkan data OutcomingInventory
+        $outcomingData = OutcomingInventory::selectRaw('MONTH(issued_date) as month, SUM(harga * quantity) as total_value')
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get();
+    
+        // Mengisi array bulan (1-12) untuk memastikan data konsisten
+        $months = collect(range(1, 12))->map(function ($month) {
+            return Carbon::create()->month($month)->format('F');
+        });
+    
+        // Data total nilai untuk grafik (harga * quantity per bulan)
+        $totalValues = $months->map(function ($month, $index) use ($outcomingData) {
+            $data = $outcomingData->firstWhere('month', $index + 1);
+            return $data ? (int) $data->total_value : 0;  // Ubah menjadi integer
+        });
+    
+        // Simpan grafik sebagai gambar
+        $chartImagePath = $this->generateChartImage($months, $totalValues);
+    
+        // Load view PDF dengan data yang sesuai, termasuk gambar grafik
+        $pdf = PDF::loadView('penjualan.pdfFinancialRecap', [
+            'months' => $months,
+            'totalValues' => $totalValues,
+            'chartImagePath' => $chartImagePath, // Kirim path gambar ke view
+        ]);
+    
+        // Return the PDF file download
+        return $pdf->download('financial-recap.pdf');
+    }
+    
+    private function generateChartImage($months, $totalValues)
+    {
+        $chartOptions = [
+            'chart' => ['type' => 'line'],
+            'title' => ['text' => 'Grafik Akumulasi Harga * Quantity per Bulan'],
+            'xAxis' => ['categories' => $months->toArray()],
+            'yAxis' => ['title' => ['text' => 'Total Harga * Quantity']],
+            'series' => [[
+                'name' => 'Total Akumulasi',
+                'data' => $totalValues->toArray(),
+            ]]
+        ];
+    
+        // Gunakan Highcharts Export Server
+        $url = 'https://export.highcharts.com/';
+        $response = Http::asForm()->post($url, [
+            'options' => json_encode($chartOptions),
+            'type' => 'image/png',
+        ]);
+    
+        $filePath = public_path('charts/chart.png');
+        file_put_contents($filePath, $response->body());
+    
+        return $filePath;
+    }
+    
+
     public function printSales($id)
     {
         // Mengambil data pembelian dengan relasi 'inventory' dan 'status'

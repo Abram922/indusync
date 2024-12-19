@@ -1,0 +1,30 @@
+<style>
+      body {
+        padding: 15px;
+        gap: 10px;
+      }
+      .cloudflare-qa-section {
+        display: flex;
+        flex-direction: column;
+      }
+      .cloudflare-qa-section p {
+        margin: 0;
+      }
+      h3 {
+         margin: 24px 0 12px;
+      }
+ </style>
+
+
+<h1>Sorry, you have been blocked</h1>
+Your are unable to access export.highcharts.com
+<div class="cloudflare-qa-section">
+<h3>Why have I been blocked?</h3>
+<p>Most likely your request lack the <strong>required HTTP referer and user-agent</strong> headers. Also, chart configurations that fail to render properly,
+excessive requests ("hammering") and similar will result in progressively longer periods of blocking.</p>
+</div>
+<div class="cloudflare-qa-section">
+<h3>What can I do to resolve this?</h3>
+<p>First of all check your headers, and also read our <a href="https://www.highcharts.com/docs/export-module/privacy-disclaimer-export">Fair Usage Policy</a>
+to make sure your usage is not significantly above expected levels. Blocking is based on your IP, which may be shared, so blocking might not be caused by your actions.</p>
+</div>
