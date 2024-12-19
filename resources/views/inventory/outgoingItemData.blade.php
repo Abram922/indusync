@@ -64,10 +64,7 @@
                 
                             if (month && year) {
                                 // Redirect to route with parameters
-                                const url = `{{ route('outgoing.printByMonth', ['month' => ':month', 'year' => ':year']) }}`
-                                    .replace(':month', month)
-                                    .replace(':year', year);
-                
+                                const url = `{{ route('outgoing.printByMonth', ['month' => ':month', 'year' => ':year']) }}`.replace(':month', month).replace(':year', year);
                                 window.location.href = url;
                             } else {
                                 alert('Harap pilih bulan dan tahun terlebih dahulu.');
@@ -111,8 +108,10 @@
                         @endforeach
                     </tbody>
                 </table>
+
+                <!-- Pagination -->
+                {{ $outgoingInventories->links() }}
             @endif
         </div>
     </div>
-  </x-app-layout>
-  
+</x-app-layout>

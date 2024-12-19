@@ -19,7 +19,7 @@
         data-bs-toggle="modal" data-bs-target="#printModal">
             Print
         </button>
-  
+
         <!-- Modal Dialog -->
         <div class="modal fade" id="printModal" tabindex="-1" aria-labelledby="printModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -55,7 +55,7 @@
                             <button type="button" class="btn btn-primary" id="submitPrint">Print</button>
                         </div>
                     </form>
-  
+
                     <script>
                         document.getElementById('submitPrint').addEventListener('click', function () {
                             const month = document.getElementById('month').value;
@@ -111,11 +111,15 @@
                                         Print
                                     </a>
                                 </td>
-                                
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
+
+                <!-- Pagination -->
+                <div class="mt-4">
+                    {{ $purchase->links() }}
+                </div>
             @endif
         </div>
     </div>

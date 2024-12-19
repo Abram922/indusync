@@ -12,25 +12,24 @@ class PurchaseController extends Controller
    
     public function index()
     {
-        // Mengambil semua data dari tabel inventories
-        $inventories = Inventory::all(); 
-
-        $purchase = Purchase::with('inventory')->get(); // Dengan relasi ke inventory
-
-        // Mengirim data ke view
-        return view('penjualan.inputPurchase', compact('inventories', 'purchase'));
+        $inventories = Inventory::all();
+        $purchases = Purchase::with('inventory', 'status')->orderBy('created_at','desc')->paginate(10) ;
+        return view('penjualan.inputPurchase', compact('inventories', 'purchases'));
     }
-
+    
+    
     public function historyPurchase()
     {
         // Mengambil semua data dari tabel inventories
         $inventories = Inventory::all(); 
-
-        $purchase = purchase::with('inventory')->get(); // Dengan relasi ke inventory
-
+    
+        // Mengambil data dengan paginasi untuk tabel purchase
+        $purchase = purchase::with('inventory')->paginate(10); // Tambahkan paginate(10)
+    
         // Mengirim data ke view
         return view('penjualan.purchaseHistory', compact('inventories', 'purchase'));
     }
+    
 
     public function update(Request $request, $id)
 {

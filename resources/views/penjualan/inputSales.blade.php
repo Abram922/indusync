@@ -81,7 +81,6 @@
             </div>
         </div>
   
-        <!-- Table for Outgoing Data -->
         <div>
             @if($outgoingInventories->isEmpty())
                 <p>No outgoing data available.</p>
@@ -113,12 +112,12 @@
                                 <td>{{ $outgoing->keterangan }}</td>
                                 <td>
                                     <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal{{ $outgoing->id }}">Edit</a>
-
+        
                                     <!-- Button untuk Trigger Modal -->
                                     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $outgoing->id }}">
-                                      Delete
+                                        Delete
                                     </button>
-  
+        
                                     <!-- Button Print -->
                                     <a href="{{ route('inputSales.print', $outgoing->id) }}" class="btn btn-info">
                                         Print 
@@ -128,9 +127,14 @@
                         @endforeach
                     </tbody>
                 </table>
+        
+                <!-- Pagination Links -->
+                <div class="mt-4">
+                    {{ $outgoingInventories->links() }}
+                </div>
             @endif
         </div>
-  
+        
     </div>
   
     <!-- Modal Edit -->

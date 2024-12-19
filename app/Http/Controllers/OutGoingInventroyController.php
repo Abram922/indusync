@@ -46,7 +46,6 @@ class OutGoingInventroyController extends Controller
         ]);
     }
     
-
     public function index()
     {
         // Mengambil semua data dari tabel inventories
@@ -57,8 +56,8 @@ class OutGoingInventroyController extends Controller
             ->where('quantity', '>', 0)  // Filter stok lebih dari 0
             ->get();
     
-        // Mengambil semua data dari tabel outgoing_inventories
-        $outgoingInventories = OutcomingInventory::with('inventory')->get();
+        // Mengambil semua data dari tabel outgoing_inventories dengan pagination
+        $outgoingInventories = OutcomingInventory::with('inventory')->orderBy('created_at','desc')->paginate(10); // paginate dengan jumlah per halaman
     
         // Menghitung stok untuk setiap inventory
         $inventoriesWithStock = $inventories->map(function ($inventory) use ($incomingInventories, $outgoingInventories) {
@@ -73,11 +72,11 @@ class OutGoingInventroyController extends Controller
     
             return $inventory;
         });
-
-        
+    
         // Mengirim data ke view
         return view('inventory.outgoingItemData', compact('inventoriesWithStock', 'incomingInventories', 'outgoingInventories'));
     }
+    
 
     public function salesHistory()
     {
@@ -90,7 +89,7 @@ class OutGoingInventroyController extends Controller
             ->get();
     
         // Mengambil semua data dari tabel outgoing_inventories
-        $outgoingInventories = OutcomingInventory::with('inventory')->get();
+        $outgoingInventories = OutcomingInventory::with('inventory')->orderBy('created_at','desc')->paginate(10); // Tambahkan paginate(10)
     
         // Menghitung stok untuk setiap inventory
         $inventoriesWithStock = $inventories->map(function ($inventory) use ($incomingInventories, $outgoingInventories) {
@@ -105,13 +104,12 @@ class OutGoingInventroyController extends Controller
     
             return $inventory;
         });
-
-        
+    
         // Mengirim data ke view
         return view('penjualan.salesHistory', compact('inventoriesWithStock', 'incomingInventories', 'outgoingInventories'));
     }
-
-    public function inputsales()
+    
+    public function inputsales(Request $request)
     {
         // Mengambil semua data dari tabel inventories
         $inventories = Inventory::all();
@@ -121,9 +119,10 @@ class OutGoingInventroyController extends Controller
             ->where('quantity', '>', 0)  // Filter stok lebih dari 0
             ->get();
     
-        // Mengambil semua data dari tabel outgoing_inventories
-        $outgoingInventories = OutcomingInventory::with('inventory')->get();
-    
+        // Mengambil semua data dari tabel outgoing_inventories dengan pagination
+        $outgoingInventories = OutcomingInventory::with('inventory')->orderBy('created_at','desc')
+            ->paginate(10); // 10 data per halaman
+        
         // Menghitung stok untuk setiap inventory
         $inventoriesWithStock = $inventories->map(function ($inventory) use ($incomingInventories, $outgoingInventories) {
             // Menghitung total incoming untuk masing-masing inventory
@@ -141,6 +140,7 @@ class OutGoingInventroyController extends Controller
         // Mengirim data ke view
         return view('penjualan.inputSales', compact('inventoriesWithStock', 'incomingInventories', 'outgoingInventories'));
     }
+    
 
     public function update(Request $request, $id)
     {

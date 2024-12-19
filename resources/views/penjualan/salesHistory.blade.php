@@ -81,43 +81,49 @@
         <!-- Table for Outgoing Data -->
         <div>
             @if($outgoingInventories->isEmpty())
-                <p>No outgoing data available.</p>
-            @else
-                <table class="table table-striped table-hover">
-                    <thead>
+            <p>No outgoing data available.</p>
+        @else
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Nama Barang</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Tujuan</th>
+                        <th scope="col">Harga</th>
+                        <th scope="col">Total Harga</th>
+                        <th scope="col">Keterangan</th>
+                        <th scope="col">Tanggal Keluar</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($outgoingInventories as $outgoing)
                         <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Nama Barang</th>
-                            <th scope="col">Quantity</th>
-                            <th scope="col">Tujuan</th>
-                            <th scope="col">Harga</th>
-                            <th scope="col">Total Harga</th>
-                            <th scope="col">Keterangan</th>
-                            <th scope="col">Tanggal Keluar</th>
-                            <th scope="col">Action</th>
+                            <td>{{ $outgoing->id }}</td>
+                            <td>{{ $outgoing->inventory->name ?? 'Tidak ada' }}</td>
+                            <td>{{ $outgoing->quantity }}</td>
+                            <td>{{ $outgoing->receiver }}</td>
+                            <td>{{ $outgoing->harga }}</td>
+                            <td>{{ $outgoing->harga * $outgoing->quantity }}</td>
+                            <td>{{ $outgoing->keterangan }}</td>
+                            <td>{{ \Carbon\Carbon::parse($outgoing->issued_date)->format('d F Y') }}</td>
+                            <td>
+                                <a href="{{ route('inputSales.print', $outgoing->id) }}" class="btn btn-info">
+                                    Print
+                                </a>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($outgoingInventories as $outgoing)
-                            <tr>
-                                <td>{{ $outgoing->id }}</td>
-                                <td>{{ $outgoing->inventory->name ?? 'Tidak ada' }}</td>
-                                <td>{{ $outgoing->quantity }}</td>
-                                <td>{{ $outgoing->receiver }}</td>
-                                <td>{{ $outgoing->harga }}</td>
-                                <td>{{ $outgoing->harga * $outgoing->quantity }}</td>
-                                <td>{{ $outgoing->keterangan }}</td>
-                                <td>{{ \Carbon\Carbon::parse($outgoing->issued_date)->format('d F Y') }}</td>
-                                <td>
-                                    <a href="{{ route('inputSales.print', $outgoing->id) }}" class="btn btn-info">
-                                        Print
-                                    </a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            @endif
+                    @endforeach
+                </tbody>
+            </table>
+        
+            <!-- Pagination -->
+            <div class="mt-4">
+                {{ $outgoingInventories->links() }}
+            </div>
+        @endif
+        
         </div>
     </div>
   </x-app-layout>

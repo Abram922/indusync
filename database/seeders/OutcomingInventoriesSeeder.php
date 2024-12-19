@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class OutcomingInventoriesSeeder extends Seeder
@@ -12,45 +11,229 @@ class OutcomingInventoriesSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-
-     public function run(): void
-     {
-         DB::table('outcoming_inventories')->insert([
-             [
-                 'inventory_id' => 1, // Pastikan ID ini sesuai dengan data di tabel inventories
-                 'quantity' => 50,
-                 'customer_name' => 'PT. Alpha', // Nama customer
-                 'harga' => 50000, // Harga satuan
-                 'receiver' => 'John Doe',
-                 'issued_date' => Carbon::now()->subDays(3)->toDateString(),
-                 'keterangan' => 'Pengiriman batch pertama',
-                 'created_at' => Carbon::now(),
-                 'updated_at' => Carbon::now(),
-             ],
-             [
-                 'inventory_id' => 2, // Pastikan ID ini sesuai dengan data di tabel inventories
-                 'quantity' => 30,
-                 'customer_name' => 'PT. Beta', // Nama customer
-                 'harga' => 75000, // Harga satuan
-                 'receiver' => 'Jane Smith',
-                 'issued_date' => Carbon::now()->subDays(7)->toDateString(),
-                 'keterangan' => 'Order urgent',
-                 'created_at' => Carbon::now(),
-                 'updated_at' => Carbon::now(),
-             ],
-             [
-                 'inventory_id' => 3, // Pastikan ID ini sesuai dengan data di tabel inventories
-                 'quantity' => 20,
-                 'customer_name' => 'PT. Gamma', // Nama customer
-                 'harga' => 100000, // Harga satuan
-                 'receiver' => 'Mike Johnson',
-                 'issued_date' => Carbon::now()->subDays(1)->toDateString(),
-                 'keterangan' => 'Kebutuhan reguler',
-                 'created_at' => Carbon::now(),
-                 'updated_at' => Carbon::now(),
-             ],
-         ]);
-     }
-
-
+    public function run(): void
+    {
+        DB::table('outcoming_inventories')->insert([
+            [
+                'inventory_id' => 11,
+                'quantity' => 8,
+                'customer_name' => 'Jack Gray',
+                'harga' => 450000,
+                'receiver' => 'Warehouse 4',
+                'issued_date' => Carbon::now()->subDays(27),
+                'keterangan' => 'Barang dikirim ke customer Jack Gray',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'inventory_id' => 12,
+                'quantity' => 8,
+                'customer_name' => 'Kevin Brown',
+                'harga' => 1000000,
+                'receiver' => 'Warehouse 1',
+                'issued_date' => Carbon::now()->subDays(20),
+                'keterangan' => 'Barang dikirim ke customer Kevin Brown',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'inventory_id' => 13,
+                'quantity' => 8,
+                'customer_name' => 'Linda Violet',
+                'harga' => 750000,
+                'receiver' => 'Warehouse 2',
+                'issued_date' => Carbon::now()->subDays(19),
+                'keterangan' => 'Barang dikirim ke customer Linda Violet',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'inventory_id' => 14,
+                'quantity' => 8,
+                'customer_name' => 'Michael Tan',
+                'harga' => 300000,
+                'receiver' => 'Warehouse 3',
+                'issued_date' => Carbon::now()->subDays(10),
+                'keterangan' => 'Barang dikirim ke customer Michael Tan',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'inventory_id' => 15,
+                'quantity' => 8,
+                'customer_name' => 'Natalie Blue',
+                'harga' => 1000000,
+                'receiver' => 'Warehouse 4',
+                'issued_date' => Carbon::now()->subDays(15),
+                'keterangan' => 'Barang dikirim ke customer Natalie Blue',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'inventory_id' => 16,
+                'quantity' => 8,
+                'customer_name' => 'Oliver Gray',
+                'harga' => 450000,
+                'receiver' => 'Warehouse 1',
+                'issued_date' => Carbon::now()->subDays(5),
+                'keterangan' => 'Barang dikirim ke customer Oliver Gray',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'inventory_id' => 17,
+                'quantity' => 8,
+                'customer_name' => 'Paul Red',
+                'harga' => 700000,
+                'receiver' => 'Warehouse 2',
+                'issued_date' => Carbon::now()->subDays(8),
+                'keterangan' => 'Barang dikirim ke customer Paul Red',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'inventory_id' => 18,
+                'quantity' => 8,
+                'customer_name' => 'Quincy Green',
+                'harga' => 650000,
+                'receiver' => 'Warehouse 3',
+                'issued_date' => Carbon::now()->subDays(12),
+                'keterangan' => 'Barang dikirim ke customer Quincy Green',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'inventory_id' => 19,
+                'quantity' => 8,
+                'customer_name' => 'Rachel Yellow',
+                'harga' => 900000,
+                'receiver' => 'Warehouse 4',
+                'issued_date' => Carbon::now()->subDays(18),
+                'keterangan' => 'Barang dikirim ke customer Rachel Yellow',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'inventory_id' => 20,
+                'quantity' => 8,
+                'customer_name' => 'Samuel White',
+                'harga' => 550000,
+                'receiver' => 'Warehouse 2',
+                'issued_date' => Carbon::now()->subDays(4),
+                'keterangan' => 'Barang dikirim ke customer Samuel White',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'inventory_id' => 21,
+                'quantity' => 8,
+                'customer_name' => 'Tina Black',
+                'harga' => 720000,
+                'receiver' => 'Warehouse 1',
+                'issued_date' => Carbon::now()->subDays(9),
+                'keterangan' => 'Barang dikirim ke customer Tina Black',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'inventory_id' => 22,
+                'quantity' => 8,
+                'customer_name' => 'Ulysses Gray',
+                'harga' => 880000,
+                'receiver' => 'Warehouse 3',
+                'issued_date' => Carbon::now()->subDays(6),
+                'keterangan' => 'Barang dikirim ke customer Ulysses Gray',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'inventory_id' => 23,
+                'quantity' => 8,
+                'customer_name' => 'Victor Blue',
+                'harga' => 650000,
+                'receiver' => 'Warehouse 4',
+                'issued_date' => Carbon::now()->subDays(16),
+                'keterangan' => 'Barang dikirim ke customer Victor Blue',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'inventory_id' => 24,
+                'quantity' => 8,
+                'customer_name' => 'William Orange',
+                'harga' => 700000,
+                'receiver' => 'Warehouse 1',
+                'issued_date' => Carbon::now()->subDays(10),
+                'keterangan' => 'Barang dikirim ke customer William Orange',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'inventory_id' => 25,
+                'quantity' => 8,
+                'customer_name' => 'Xavier Brown',
+                'harga' => 750000,
+                'receiver' => 'Warehouse 2',
+                'issued_date' => Carbon::now()->subDays(20),
+                'keterangan' => 'Barang dikirim ke customer Xavier Brown',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'inventory_id' => 26,
+                'quantity' => 8,
+                'customer_name' => 'Yasmine Black',
+                'harga' => 600000,
+                'receiver' => 'Warehouse 3',
+                'issued_date' => Carbon::now()->subDays(14),
+                'keterangan' => 'Barang dikirim ke customer Yasmine Black',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'inventory_id' => 27,
+                'quantity' => 8,
+                'customer_name' => 'Zachary Pink',
+                'harga' => 500000,
+                'receiver' => 'Warehouse 4',
+                'issued_date' => Carbon::now()->subDays(28),
+                'keterangan' => 'Barang dikirim ke customer Zachary Pink',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'inventory_id' => 28,
+                'quantity' => 8,
+                'customer_name' => 'Alexis Yellow',
+                'harga' => 550000,
+                'receiver' => 'Warehouse 1',
+                'issued_date' => Carbon::now()->subDays(7),
+                'keterangan' => 'Barang dikirim ke customer Alexis Yellow',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'inventory_id' => 29,
+                'quantity' => 8,
+                'customer_name' => 'Brian White',
+                'harga' => 700000,
+                'receiver' => 'Warehouse 2',
+                'issued_date' => Carbon::now()->subDays(11),
+                'keterangan' => 'Barang dikirim ke customer Brian White',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'inventory_id' => 30,
+                'quantity' => 8,
+                'customer_name' => 'Catherine Green',
+                'harga' => 900000,
+                'receiver' => 'Warehouse 3',
+                'issued_date' => Carbon::now()->subDays(5),
+                'keterangan' => 'Barang dikirim ke customer Catherine Green',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
+    }
 }

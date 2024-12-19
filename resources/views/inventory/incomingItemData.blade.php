@@ -142,7 +142,6 @@
                 <input type="date" class="form-control" id="tanggal_masuk" name="tanggal_masuk" required>
               </div>
 
-
               <button type="submit" class="btn btn-primary" id="submitBtn" disabled>Simpan</button>
             </form>
           </div>
@@ -189,67 +188,39 @@
       @if($incomingInventories->isEmpty())
         <p>No data available.</p> <!-- Jika tidak ada data -->
       @else
-        <table class="table table-striped table-hover">
-          <thead>
+      <table class="table table-striped table-hover">
+        <thead>
             <tr>
-              <th scope="col">ID</th>
-              <th scope="col">Nama Barang</th>
-              <th scope="col">Quantity</th>
-              <th scope="col">Sumber</th>
-              <th scope="col">Tanggal Masuk</th>
-              <th scope="col">Keterangan</th>
-              <th scope="col">Action</th>
+                <th scope="col">ID</th>
+                <th scope="col">Nama Barang</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Sumber</th>
+                <th scope="col">Tanggal Masuk</th>
+                <th scope="col">Keterangan</th>
+                <th scope="col">Action</th>
             </tr>
-          </thead>
-          <tbody>
+        </thead>
+        <tbody>
             @foreach($incomingInventories as $incoming)
-              <tr>
-                <td>{{ $incoming->id }}</td>
-                <td>{{ $incoming->inventory->name ?? 'Tidak ada' }}</td>
-                <td>{{ $incoming->quantity }}</td>
-                <td>{{ $incoming->supplier }}</td>
-                <td>{{ \Carbon\Carbon::parse($incoming->received_at)->format('d F Y') }}</td>
-                <td>{{ $incoming->inventory->description }}</td>
-                <td>
-                  <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal{{ $incoming->id }}">Edit</a>
-
-                  <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModalIncoming{{ $incoming->id }}">
-                    Hapus
-                  </button>
-                  
-
-                  <!-- Modal Konfirmasi Hapus -->
-                  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="deleteModalLabel">Konfirmasi Penghapusan</h5>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                          <p>Apakah Anda yakin ingin menghapus item ini?</p>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                          <!-- Form untuk hapus data -->
-                          <form id="deleteForm" action="" method="POST" style="display: inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Hapus</button>
-                          </form>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <a href="{{ route('inventory.print', $incoming->id) }}" class="btn btn-info">
-                    Print 
-                  </a>
-                </td>
-              </tr>
+                <tr>
+                    <td>{{ $incoming->id }}</td>
+                    <td>{{ $incoming->inventory->name ?? 'Tidak ada' }}</td>
+                    <td>{{ $incoming->quantity }}</td>
+                    <td>{{ $incoming->supplier }}</td>
+                    <td>{{ \Carbon\Carbon::parse($incoming->received_at)->format('d F Y') }}</td>
+                    <td>{{ $incoming->inventory->description }}</td>
+                    <td>
+                        <!-- Action Buttons -->
+                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editModal{{ $incoming->id }}">Edit</button>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModalIncoming{{ $incoming->id }}">Hapus</button>
+                    </td>
+                </tr>
             @endforeach
-          </tbody>
-        </table>
+        </tbody>
+    </table>
+    <div class="d-flex justify-content-end">
+      {{ $incomingInventories->links() }}
+    </div>
       @endif
 
       <!-- Modal Edit -->
@@ -303,32 +274,30 @@
             </div>
           </div>
         </div>
-      @endforeach
 
-
-      @foreach($incomingInventories as $incoming)
-  <div class="modal fade" id="deleteModalIncoming{{ $incoming->id }}" tabindex="-1" aria-labelledby="deleteModalLabelIncoming{{ $incoming->id }}" aria-hidden="true">
-      <div class="modal-dialog">
-          <div class="modal-content">
+        <!-- Modal Delete -->
+        <div class="modal fade" id="deleteModalIncoming{{ $incoming->id }}" tabindex="-1" aria-labelledby="deleteModalLabelIncoming{{ $incoming->id }}" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
               <div class="modal-header">
-                  <h5 class="modal-title" id="deleteModalLabelIncoming{{ $incoming->id }}">Konfirmasi Hapus</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="deleteModalLabelIncoming{{ $incoming->id }}">Hapus Item Masuk</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
-                  Apakah Anda yakin ingin menghapus data ini?
+                <p>Apakah Anda yakin ingin menghapus item ini?</p>
               </div>
               <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                  <form action="{{ route('inventory.destroy', $incoming->id) }}" method="POST">
-                      @csrf
-                      @method('DELETE')
-                      <button type="submit" class="btn btn-danger">Hapus</button>
-                  </form>
+                <form action="{{ route('inventory.destroy', $incoming->id) }}" method="POST">
+                  @csrf
+                  @method('DELETE')
+                  <button type="submit" class="btn btn-danger">Hapus</button>
+                </form>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
               </div>
+            </div>
           </div>
-      </div>
-  </div>
-@endforeach
+        </div>
+      @endforeach
 
     </div>
   </div>

@@ -16,14 +16,17 @@ use Illuminate\Support\Facades\DB;
 {
     public function index()
     {
-        // Mengambil semua data dari tabel inventories
-        $inventories = Inventory::all(); 
-
-        $incomingInventories = IncomingInventory::with('inventory')->get(); // Dengan relasi ke inventory
-
+        // Mengambil data inventory dengan pagination jika diperlukan
+        $inventories = Inventory::paginate(10); // Sesuaikan jumlah per halaman jika diperlukan
+        
+        // Tambahkan pagination untuk data incoming inventories
+        $incomingInventories = IncomingInventory::with('inventory')->orderBy('created_at','desc')->paginate(10); // Tampilkan 10 data per halaman
+        
         // Mengirim data ke view
         return view('inventory.incomingItemData', compact('inventories', 'incomingInventories'));
     }
+    
+    
 
     public function stockData()
     {
